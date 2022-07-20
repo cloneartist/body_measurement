@@ -8,6 +8,8 @@ import 'package:body_detection/models/body_mask.dart';
 import 'package:body_detection/models/pose_landmark.dart';
 import 'package:body_detection/models/pose_landmark_type.dart';
 import 'package:body_detection/png_image.dart';
+import 'package:body_measurement/mainhome.dart';
+import 'package:body_measurement/results.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
@@ -29,348 +31,80 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool selected = false;
-  int _selectedTabIndex = 0;
-  double xl = 0.0,
-      xr = 0.0,
-      yl = 0.0,
-      yr = 0.0,
-      sumx = 0.0,
-      sumy = 0.0,
-      disto = 0.0,
-      dist = 0.0;
-  bool _isDetectingPose = false;
-  bool _isDetectingBodyMask = false;
+  final myController = TextEditingController();
 
-  Image? _selectedImage;
-
-  Pose? _detectedPose;
-  ui.Image? _maskImage;
-  Image? _cameraImage;
-  Size _imageSize = Size.zero;
-
-  Future<void> _selectImage() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
-    if (result == null || result.files.isEmpty) return;
-    final path = result.files.single.path;
-    if (path != null) {
-      _resetState();
-      setState(() {
-        _selectedImage = Image.file(File(path));
-      });
-      _detectImagePose();
-    }
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
   }
-
-  Future<void> _detectImagePose() async {
-    PngImage? pngImage = await _selectedImage?.toPngImage();
-    if (pngImage == null) return;
-    setState(() {
-      _imageSize = Size(pngImage.width.toDouble(), pngImage.height.toDouble());
-    });
-    final pose = await BodyDetection.detectPose(image: pngImage);
-    _handlePose(pose);
-    // final double hRatio =
-    //     imageSize.width == 0 ? 1 : size.width / imageSize.width;
-    // final double vRatio =
-    //     imageSize.height == 0 ? 1 : size.height / imageSize.height;
-
-    offsetForPart(PoseLandmark part) =>
-        Offset(part.position.x, part.position.y);
-    for (final part in pose!.landmarks) {
-      if (part.type == PoseLandmarkType.leftShoulder) {
-        // print(part.type);
-        // print(part.position.x);
-        // print(part.position.y);
-        // print(part.position.z);
-        xl = part.position.x;
-        xl = part.position.y;
-      } else if (part.type == PoseLandmarkType.rightShoulder) {
-        xr = part.position.x;
-        yr = part.position.y;
-      }
-    }
-
-    // print(dist);
-    // Draw a circular indicator for th
-    // if (part.type == PoseLandmarkType.leftShoulder ||
-    //     part.type == PoseLandmarkType.rightShoulder) {
-    //   print(part.type);
-    //   print(part.position.x);
-    //   print(part.position.y);
-    //   print(part.position.z);
-    // }
-
-    selected = true;
-  }
-
-  // Future<void> _detectImageBodyMask() async {
-  //   PngImage? pngImage = await _selectedImage?.toPngImage();
-  //   if (pngImage == null) return;
-  //   setState(() {
-  //     _imageSize = Size(pngImage.width.toDouble(), pngImage.height.toDouble());
-  //   });
-  //   final mask = await BodyDetection.detectBodyMask(image: pngImage);
-  //   _handleBodyMask(mask);
-  // }
-
-  // Future<void> _startCameraStream() async {
-  //   // final request = await Permission.camera.request();
-  //   bool request = true;
-  //   if (request) {
-  //     await BodyDetection.startCameraStream(
-  //       onFrameAvailable: _handleCameraImage,
-  //       onPoseAvailable: (pose) {
-  //         if (!_isDetectingPose) return;
-  //         _handlePose(pose);
-  //       },
-  //       onMaskAvailable: (mask) {
-  //         if (!_isDetectingBodyMask) return;
-  //         _handleBodyMask(mask);
-  //       },
-  //     );
-  //   }
-  // }
-
-  // Future<void> _stopCameraStream() async {
-  //   await BodyDetection.stopCameraStream();
-
-  //   setState(() {
-  //     _cameraImage = null;
-  //     _imageSize = Size.zero;
-  //   });
-  // }
-
-  // void _handleCameraImage(ImageResult result) {
-  //   // Ignore callback if navigated out of the page.
-  //   if (!mounted) return;
-
-  //   // To avoid a memory leak issue.
-  //   // https://github.com/flutter/flutter/issues/60160
-  //   PaintingBinding.instance?.imageCache?.clear();
-  //   PaintingBinding.instance?.imageCache?.clearLiveImages();
-
-  //   final image = Image.memory(
-  //     result.bytes,
-  //     gaplessPlayback: true,
-  //     fit: BoxFit.contain,
-  //   );
-
-  //   setState(() {
-  //     _cameraImage = image;
-  //     _imageSize = result.size;
-  //   });
-  // }
-
-  void _handlePose(Pose? pose) {
-    // Ignore if navigated out of the page.
-    if (!mounted) return;
-
-    setState(() {
-      _detectedPose = pose;
-    });
-  }
-
-  // void _handleBodyMask(BodyMask? mask) {
-  //   // Ignore if navigated out of the page.
-  //   if (!mounted) return;
-
-  //   if (mask == null) {
-  //     setState(() {
-  //       _maskImage = null;
-  //     });
-  //     return;
-  //   }
-
-  //   final bytes = mask.buffer
-  //       .expand(
-  //         (it) => [0, 0, 0, (it * 255).toInt()],
-  //       )
-  //       .toList();
-  //   ui.decodeImageFromPixels(Uint8List.fromList(bytes), mask.width, mask.height,
-  //       ui.PixelFormat.rgba8888, (image) {
-  //     setState(() {
-  //       _maskImage = image;
-  //     });
-  //   });
-  // }
-
-  Future<void> _toggleDetectPose() async {
-    if (_isDetectingPose) {
-      await BodyDetection.disablePoseDetection();
-    } else {
-      await BodyDetection.enablePoseDetection();
-    }
-
-    setState(() {
-      _isDetectingPose = !_isDetectingPose;
-      _detectedPose = null;
-    });
-  }
-
-  // Future<void> _toggleDetectBodyMask() async {
-  //   if (_isDetectingBodyMask) {
-  //     await BodyDetection.disableBodyMaskDetection();
-  //   } else {
-  //     await BodyDetection.enableBodyMaskDetection();
-  //   }
-
-  //   setState(() {
-  //     _isDetectingBodyMask = !_isDetectingBodyMask;
-  //     _maskImage = null;
-  //   });
-  // }
-
-  // void _onTabEnter(int index) {
-  //   // Camera tab
-  //   if (index == 1) {
-  //     _startCameraStream();
-  //   }
-  // }
-
-  // void _onTabExit(int index) {
-  //   // Camera tab
-  //   if (index == 1) {
-  //     _stopCameraStream();
-  //   }
-  // }
-
-  // void _onTabSelectTapped(int index) {
-  //   _onTabExit(_selectedTabIndex);
-  //   _onTabEnter(index);
-
-  //   setState(() {
-  //     _selectedTabIndex = index;
-  //   });
-  // }
-
-  // Widget? get _selectedTab => _selectedTabIndex == 0
-  //     ? _imageDetectionView
-  //     : _selectedTabIndex == 1
-  //         ? _cameraDetectionView
-  //         : null;
-
-  void _resetState() {
-    setState(() {
-      _maskImage = null;
-      _detectedPose = null;
-      _imageSize = Size.zero;
-      selected = false;
-    });
-  }
-
-  Widget get _imageDetectionView => SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              selected
-                  ? GestureDetector(
-                      child: ClipRect(
-                        child: CustomPaint(
-                          child: _selectedImage,
-                          foregroundPainter: PosePainter(
-                            pose: _detectedPose!,
-                            // mask: _maskImage!,
-                            imageSize: _imageSize,
-                          ),
-                        ),
-                      ),
-                    )
-                  : Container(),
-              OutlinedButton(
-                onPressed: _selectImage,
-                child: const Text('Select image'),
-              ),
-              OutlinedButton(
-                onPressed: () {
-                  // final double hRatio =
-                  //     _imageSize.width == 0 ? 1 : size.width / imageSize.width;
-                  // final double vRatio = imageSize.height == 0
-                  //     ? 1
-                  //     : size.height / imageSize.height;
-                  sumx = (xr - xl) * (xr - xl);
-                  print(sumx);
-                  sumy = (yr - yl) * (yr - yl);
-                  print(sumy);
-                  disto = sumx + sumy;
-                  print(disto);
-                  dist = sqrt(disto);
-                  print(dist);
-                }
-                //  _detectImagePose,
-                ,
-                child: const Text('Detect pose'),
-              ),
-              // OutlinedButton(
-              //   onPressed: _detectImageBodyMask,
-              //   child: const Text('Detect body mask'),
-              // ),
-              OutlinedButton(
-                onPressed: _resetState,
-                child: const Text('Clear'),
-              ),
-              Disp(0)
-            ],
-          ),
-        ),
-      );
-
-  // Widget get _cameraDetectionView => SingleChildScrollView(
-  //       child: Center(
-  //         child: Column(
-  //           children: [
-  //             // ClipRect(
-  //             //   child: CustomPaint(
-  //             //     child: _cameraImage,
-  //             //     foregroundPainter: PoseMaskPainter(
-  //             //       pose: _detectedPose,
-  //             //       mask: _maskImage,
-  //             //       imageSize: _imageSize,
-  //             //     ),
-  //             //   ),
-  //             // ),
-  //             // OutlinedButton(
-  //             //   onPressed: _toggleDetectPose,
-  //             //   child: _isDetectingPose
-  //             //       ? const Text('Turn off pose detection')
-  //             //       : const Text('Turn on pose detection'),
-  //             // ),
-  //             // OutlinedButton(
-  //             //   onPressed: _toggleDetectBodyMask,
-  //             //   child: _isDetectingBodyMask
-  //             //       ? const Text('Turn off body mask detection')
-  //             //       : const Text('Turn on body mask detection'),
-  //             // ),
-  //           ],
-  //         ),
-  //       ),
-  //     );
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Body Measurement'),
-        ),
-        body: _imageDetectionView,
-        // bottomNavigationBar: BottomNavigationBar(
-        //   items: const <BottomNavigationBarItem>[
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.image),
-        //       label: 'Image',
-        //     ),
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.camera),
-        //       label: 'Camera',
-        //     ),
-        //   ],
-        //   currentIndex: _selectedTabIndex,
-        //   onTap: _onTabSelectTapped,
-        // ),
-        // body: _selectedTab,
+      home: homes(myController: myController),
+    );
+  }
+}
+
+class homes extends StatelessWidget {
+  const homes({
+    Key? key,
+    required this.myController,
+  }) : super(key: key);
+
+  final TextEditingController myController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextField(
+            controller: myController,
+          ),
+          TextButton(
+              onPressed: () {
+                print(myController.text);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyApps(myController.text),
+                  ),
+                );
+              },
+              child: Text("Submit"))
+        ],
       ),
     );
   }
 }
+
+// class Displ extends StatefulWidget {
+//   const Displ({Key? key}) : super(key: key);
+
+//   @override
+//   State<Displ> createState() => _DisplState();
+// }
+
+// class _DisplState extends State<Displ> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Container(
+//         child: TextButton(
+//             onPressed: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => twk(dist),
+//                 ),
+//               );
+//             },
+//             child: Text("measure")),
+//       ),
+//     );
+//   }
+// }

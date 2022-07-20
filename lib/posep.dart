@@ -96,8 +96,11 @@ class PosePainter extends CustomPainter {
     // }
   }
 
-  @override
-  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
+    return true;
+    throw UnimplementedError();
+  }
 }
 
 class Disp extends StatelessWidget {
