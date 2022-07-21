@@ -1,6 +1,3 @@
-import 'dart:ffi';
-
-import 'package:body_measurement/screens/home.dart';
 import 'package:flutter/material.dart';
 
 class twk extends StatelessWidget {
@@ -91,12 +88,12 @@ class box extends StatelessWidget {
             width: widthx * 0.9,
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black,
                     spreadRadius: 0,
                     blurRadius: 0,
-                    offset: const Offset(0, 5),
+                    offset: Offset(0, 5),
                   )
                 ],
                 border: Border.all(width: 2, color: Colors.black),

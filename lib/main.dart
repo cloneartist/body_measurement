@@ -1,24 +1,9 @@
-import 'dart:io';
-import 'dart:math';
-import 'dart:typed_data';
-import 'package:body_detection/models/image_result.dart';
-import 'package:body_detection/models/pose.dart';
-import 'package:body_detection/models/body_mask.dart';
-import 'package:body_detection/models/pose_landmark.dart';
-import 'package:body_detection/models/pose_landmark_type.dart';
-import 'package:body_detection/png_image.dart';
-import 'package:body_measurement/screens/home.dart';
 import 'package:body_measurement/screens/login.dart';
-import 'package:body_measurement/screens/results.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
-import 'package:body_detection/body_detection.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
 import 'firebase_options.dart';
-import 'screens/posep.dart';
 
 // void main() {
 //   runApp(const MyApp());
@@ -42,7 +27,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Login(),
       debugShowCheckedModeBanner: false,
     );

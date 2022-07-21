@@ -21,13 +21,13 @@ class _UserHeightState extends State<UserHeight> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: homes(myController: myController),
+      home: Homes(myController: myController),
     );
   }
 }
 
-class homes extends StatelessWidget {
-  const homes({
+class Homes extends StatelessWidget {
+  const Homes({
     Key? key,
     required this.myController,
   }) : super(key: key);
@@ -45,7 +45,7 @@ class homes extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                print(myController.text);
+                // print(myController.text);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
