@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-
 import 'package:body_detection/models/image_result.dart';
 import 'package:body_detection/models/pose.dart';
 import 'package:body_detection/models/body_mask.dart';
@@ -13,7 +12,6 @@ import 'package:body_measurement/results.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
-
 import 'package:body_detection/body_detection.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
