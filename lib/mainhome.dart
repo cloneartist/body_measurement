@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
 import 'package:body_detection/body_detection.dart';
+import 'package:flutter/services.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
 import 'posep.dart';
@@ -41,19 +42,59 @@ class _MyAppsState extends State<MyApps> {
   double x_nose = 0.0,
       y_nose = 0.0,
       z_nose = 0.0,
-      x_rankle = 0.0,
-      y_rankle = 0.0,
-      z_rankle = 0.0,
+      x_rankle28 = 0.0,
+      y_rankle28 = 0.0,
+      z_rankle28 = 0.0,
+      x_rightshoulder12 = 0.0,
+      y_rightshoulder12 = 0.0,
+      z_rightshoulder12 = 0.0,
+      x_righthip24 = 0.0,
+      y_righthip24 = 0.0,
+      z_righthip24 = 0.0,
+      x_rightwrist16 = 0.0,
+      y_rightwrist16 = 0.0,
+      z_rightwrist16 = 0.0,
+      x_leftshoulder11 = 0.0,
+      y_leftshoulder11 = 0.0,
+      z_leftshoulder11 = 0.0,
+      shirtlength = 0.0,
+      armlength = 0.0,
+      shoulderlength = 0.0,
+      pantlength = 0.0,
+// shirt length = [{dist(point12, point24)}*R]+K1
+// Arm length = [{dist(point12, point16)}*R]+K2
+// shoulder length = [{dist(point12, point11)}*R]+K3
+// Pant length = [{dist(point24, point28)}*R]+K4
       user_height = 0.0;
   bool _isDetectingPose = false;
   bool _isDetectingBodyMask = false;
 
   Image? _selectedImage;
+  Image? _startImage;
 
   Pose? _detectedPose;
   ui.Image? _maskImage;
   Image? _cameraImage;
   Size _imageSize = Size.zero;
+
+  double distance(
+      double x1, double x2, double y1, double y2, double z1, double z2) {
+    return (sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2)));
+
+    // return 0;
+  }
+
+  Future<ui.Image> getUiImage(
+      String imageAssetPath, int height, int width) async {
+    final ByteData assetImageByteData = await rootBundle.load(imageAssetPath);
+    final codec = await ui.instantiateImageCodec(
+      assetImageByteData.buffer.asUint8List(),
+      targetHeight: height,
+      targetWidth: width,
+    );
+    final image = (await codec.getNextFrame()).image;
+    return image;
+  }
 
   Future<void> _selectImage() async {
     FilePickerResult? result =
@@ -63,6 +104,7 @@ class _MyAppsState extends State<MyApps> {
     if (path != null) {
       _resetState();
       setState(() {
+        // _startImage = getUiImage(path, 716, 368) as Image?;
         _selectedImage = Image.file(File(path));
       });
       _detectImagePose();
@@ -85,18 +127,30 @@ class _MyAppsState extends State<MyApps> {
     offsetForPart(PoseLandmark part) =>
         Offset(part.position.x, part.position.y);
     for (final part in pose!.landmarks) {
-      if (part.type == PoseLandmarkType.leftShoulder) {
-        // print(part.type);
-        // print(part.position.x);
-        // print(part.position.y);
-        // print(part.position.z);
+      if (part.type == PoseLandmarkType.nose) {
         x_nose = part.position.x;
         y_nose = part.position.y;
         z_nose = part.position.z;
+      } else if (part.type == PoseLandmarkType.rightAnkle) {
+        x_rankle28 = part.position.x;
+        y_rankle28 = part.position.y;
+        z_rankle28 = part.position.z;
       } else if (part.type == PoseLandmarkType.rightShoulder) {
-        x_rankle = part.position.x;
-        y_rankle = part.position.y;
-        z_rankle = part.position.z;
+        x_rightshoulder12 = part.position.x;
+        y_rightshoulder12 = part.position.y;
+        z_rightshoulder12 = part.position.z;
+      } else if (part.type == PoseLandmarkType.leftShoulder) {
+        x_leftshoulder11 = part.position.x;
+        y_leftshoulder11 = part.position.y;
+        z_leftshoulder11 = part.position.z;
+      } else if (part.type == PoseLandmarkType.rightHip) {
+        x_righthip24 = part.position.x;
+        y_righthip24 = part.position.y;
+        z_righthip24 = part.position.z;
+      } else if (part.type == PoseLandmarkType.rightWrist) {
+        x_rightwrist16 = part.position.x;
+        y_rightwrist16 = part.position.y;
+        z_rightwrist16 = part.position.z;
       }
     }
 
@@ -165,60 +219,104 @@ class _MyAppsState extends State<MyApps> {
         appBar: AppBar(
           title: const Text('Body Measurement'),
         ),
-        body: Column(
-          children: [
-            _imageDetectionView,
-            // Text("$widget"),
-            OutlinedButton(
-              onPressed: _selectImage,
-              child: const Text('Select image'),
-            ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _imageDetectionView,
+              // Text("$widget"),
+              OutlinedButton(
+                onPressed: _selectImage,
+                child: const Text('Select image'),
+              ),
 
-            OutlinedButton(
-              onPressed: () {
-                // dist = sqrt(pow(x_nose - x_rankle, 2) + pow(y_nose - y_rankle, 2)
-                // + pow(zr - zl, 2)
-                // );
-                // print("haha");
-                // print(dist);
-                // sumx = (xr - xl) * (xr - xl);
-                // print(sumx);
-                // sumy = (yr - yl) * (yr - yl);
-                // print(sumy);
+              OutlinedButton(
+                onPressed: () {
+                  user_height = double.tryParse(widget.posted)!;
+                  // double? parsedValue2 =
+                  dist = user_height /
+                      distance(x_nose, x_rankle28, y_nose, y_rankle28, z_nose,
+                          z_rankle28);
 
-                // disto = sumx + sumy;
-                // print(disto);
-                // dist = sqrt(disto);
-                // print("lala");
-                // print(dist);
-                // Displ();
-                setState(() {
-                  dist = dist;
-                  print(widget.posted);
-                });
-                // final double hRatio =
-                //     _imageSize.width == 0 ? 1 : size.width / imageSize.width;
-                // final double vRatio = imageSize.height == 0
-                //     ? 1
-                //     : size.height / imageSize.height;
-              }
-              //  _detectImagePose,
-              ,
-              child: const Text('Detect pose'),
-            ),
+                  shirtlength = distance(
+                          x_rightshoulder12,
+                          x_righthip24,
+                          y_rightshoulder12,
+                          y_righthip24,
+                          z_rightshoulder12,
+                          z_righthip24) *
+                      dist;
+                  armlength = distance(
+                          x_rightshoulder12,
+                          x_rightwrist16,
+                          y_rightshoulder12,
+                          y_rightwrist16,
+                          z_rightshoulder12,
+                          z_rightwrist16) *
+                      dist;
+                  shoulderlength = distance(
+                          x_rightshoulder12,
+                          x_leftshoulder11,
+                          y_rightshoulder12,
+                          y_leftshoulder11,
+                          z_rightshoulder12,
+                          z_leftshoulder11) *
+                      dist;
+                  pantlength = distance(x_righthip24, x_rankle28, y_righthip24,
+                          y_rankle28, z_righthip24, z_rankle28) *
+                      dist;
+                  // (sqrt(pow(x_nose - x_rankle, 2) +
+                  //     pow(y_nose - y_rankle, 2) +
+                  //     pow(z_nose - z_rankle, 2)));
+                  // print("haha");
+                  // print(dist);
+                  // sumx = (xr - xl) * (xr - xl);
+                  // print(sumx);
+                  // sumy = (yr - yl) * (yr - yl);
+                  // print(sumy);
 
-            // OutlinedButton(
-            //   onPressed: _detectImageBodyMask,
-            //   child: const Text('Detect body mask'),
-            // ),
-            OutlinedButton(
-              onPressed: _resetState,
-              child: const Text('Clear'),
-            ),
-            // Disp(0)
+                  // disto = sumx + sumy;
+                  // print(disto);
+                  // dist = sqrt(disto);
+                  // print("lala");
+                  // print(dist);
+                  // Displ();
 
-            Text("Distance:" + "$dist"),
-          ],
+                  setState(() {
+                    dist = dist;
+                    shirtlength = shirtlength;
+                    armlength = armlength;
+                    shoulderlength = shoulderlength;
+                    pantlength = pantlength;
+                    // print(widget.posted);
+                  });
+                  // final double hRatio =
+                  //     _imageSize.width == 0 ? 1 : size.width / imageSize.width;
+                  // final double vRatio = imageSize.height == 0
+                  //     ? 1
+                  //     : size.height / imageSize.height;
+                }
+                //  _detectImagePose,
+                ,
+                child: const Text('Calculate '),
+              ),
+
+              // OutlinedButton(
+              //   onPressed: _detectImageBodyMask,
+              //   child: const Text('Detect body mask'),
+              // ),
+              OutlinedButton(
+                onPressed: _resetState,
+                child: const Text('Clear'),
+              ),
+              // Disp(0)
+
+              Text("DistancePP:" "$dist"),
+              Text("Shirt Length:" "$shirtlength"),
+              Text("Arm Length:" "$armlength"),
+              Text("Shoulder Length:" "$shoulderlength"),
+              Text("Pant Length:" "$pantlength"),
+            ],
+          ),
         ),
         // bottomNavigationBar: BottomNavigationBar(
         //   items: const <BottomNavigationBarItem>[
