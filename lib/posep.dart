@@ -54,7 +54,7 @@ class PosePainter extends CustomPainter {
         // print(part.position.y);
         // print(part.position.z);
         xl = part.position.x * hRatio;
-        xl = part.position.y * vRatio;
+        yl = part.position.y * vRatio;
       } else if (part.type == PoseLandmarkType.rightShoulder) {
         xr = part.position.x * hRatio;
         yr = part.position.y * vRatio;
@@ -77,14 +77,14 @@ class PosePainter extends CustomPainter {
       tp.paint(canvas, offsetForPart(part));
     }
     sumx = (xr - xl) * (xr - xl);
-    print(sumx);
+    // print(sumx);
     sumy = (yr - yl) * (yr - yl);
-    print(sumy);
+    // print(sumy);
     disto = sumx + sumy;
-    print(disto);
+    // print(disto);
     dist = sqrt(disto);
     print(dist);
-    Disp(dist);
+    // Disp(dist);
 
     // Draw connections between the landmarks.
     //   final landmarksByType = {for (final it in pose.landmarks) it.type: it};

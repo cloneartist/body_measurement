@@ -38,14 +38,13 @@ class MyApps extends StatefulWidget {
 class _MyAppsState extends State<MyApps> {
   bool selected = false;
   int _selectedTabIndex = 0;
-  double xl = 0.0,
-      xr = 0.0,
-      yl = 0.0,
-      yr = 0.0,
-      sumx = 0.0,
-      sumy = 0.0,
-      disto = 0.0,
-      dist = 0.0;
+  double x_nose = 0.0,
+      y_nose = 0.0,
+      z_nose = 0.0,
+      x_rankle = 0.0,
+      y_rankle = 0.0,
+      z_rankle = 0.0,
+      user_height = 0.0;
   bool _isDetectingPose = false;
   bool _isDetectingBodyMask = false;
 
@@ -91,11 +90,13 @@ class _MyAppsState extends State<MyApps> {
         // print(part.position.x);
         // print(part.position.y);
         // print(part.position.z);
-        xl = part.position.x;
-        xl = part.position.y;
+        x_nose = part.position.x;
+        y_nose = part.position.y;
+        z_nose = part.position.z;
       } else if (part.type == PoseLandmarkType.rightShoulder) {
-        xr = part.position.x;
-        yr = part.position.y;
+        x_rankle = part.position.x;
+        y_rankle = part.position.y;
+        z_rankle = part.position.z;
       }
     }
 
@@ -175,14 +176,21 @@ class _MyAppsState extends State<MyApps> {
 
             OutlinedButton(
               onPressed: () {
-                sumx = (xr - xl) * (xr - xl);
-                print(sumx);
-                sumy = (yr - yl) * (yr - yl);
-                print(sumy);
-                disto = sumx + sumy;
-                print(disto);
-                dist = sqrt(disto);
-                print(dist);
+                // dist = sqrt(pow(x_nose - x_rankle, 2) + pow(y_nose - y_rankle, 2)
+                // + pow(zr - zl, 2)
+                // );
+                // print("haha");
+                // print(dist);
+                // sumx = (xr - xl) * (xr - xl);
+                // print(sumx);
+                // sumy = (yr - yl) * (yr - yl);
+                // print(sumy);
+
+                // disto = sumx + sumy;
+                // print(disto);
+                // dist = sqrt(disto);
+                // print("lala");
+                // print(dist);
                 // Displ();
                 setState(() {
                   dist = dist;
