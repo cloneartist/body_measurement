@@ -296,7 +296,7 @@ class _MyAppsState extends State<MyApps> {
                 ),
                 // Disp(0)
                 //Measurements displayed
-                Text("DistancePP:" "$dist"),
+                // Text("DistancePerPixel:" "$dist"),
                 Text("Shirt Length:" "$shirtlength"),
                 Text("Arm Length:" "$armlength"),
                 Text("Shoulder Length:" "$shoulderlength"),
