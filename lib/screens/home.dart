@@ -1,20 +1,15 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
-import 'package:body_detection/models/image_result.dart';
 import 'package:body_detection/models/pose.dart';
-import 'package:body_detection/models/body_mask.dart';
-import 'package:body_detection/models/pose_landmark.dart';
 import 'package:body_detection/models/pose_landmark_type.dart';
 import 'package:body_detection/png_image.dart';
-import 'package:body_measurement/screens/results.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 
 import 'package:body_detection/body_detection.dart';
-import 'package:flutter/services.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
 import 'posep.dart';
@@ -22,6 +17,8 @@ import 'posep.dart';
 // void main() {
 //   runApp(const MyApps());
 // }
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+FirebaseAuth auth = FirebaseAuth.instance;
 
 class MyApps extends StatefulWidget {
   // const MyApps({Key? key}) : super(key: key);
@@ -38,7 +35,6 @@ class MyApps extends StatefulWidget {
 
 class _MyAppsState extends State<MyApps> {
   bool selected = false;
-  int _selectedTabIndex = 0;
   double x_nose = 0.0,
       y_nose = 0.0,
       z_nose = 0.0,
@@ -66,15 +62,10 @@ class _MyAppsState extends State<MyApps> {
 // shoulder length = [{dist(point12, point11)}*R]+K3
 // Pant length = [{dist(point24, point28)}*R]+K4
       user_height = 0.0;
-  bool _isDetectingPose = false;
-  bool _isDetectingBodyMask = false;
 
   Image? _selectedImage;
-  Image? _startImage;
 
   Pose? _detectedPose;
-  ui.Image? _maskImage;
-  Image? _cameraImage;
   Size _imageSize = Size.zero;
 
   double distance(
@@ -83,18 +74,18 @@ class _MyAppsState extends State<MyApps> {
 
     // return 0;
   }
-
-  Future<ui.Image> getUiImage(
-      String imageAssetPath, int height, int width) async {
-    final ByteData assetImageByteData = await rootBundle.load(imageAssetPath);
-    final codec = await ui.instantiateImageCodec(
-      assetImageByteData.buffer.asUint8List(),
-      targetHeight: height,
-      targetWidth: width,
-    );
-    final image = (await codec.getNextFrame()).image;
-    return image;
-  }
+//Future Implementation
+  // Future<ui.Image> getUiImage(
+  //     String imageAssetPath, int height, int width) async {
+  //   final ByteData assetImageByteData = await rootBundle.load(imageAssetPath);
+  //   final codec = await ui.instantiateImageCodec(
+  //     assetImageByteData.buffer.asUint8List(),
+  //     targetHeight: height,
+  //     targetWidth: width,
+  //   );
+  //   final image = (await codec.getNextFrame()).image;
+  //   return image;
+  // }
 
   Future<void> _selectImage() async {
     FilePickerResult? result =
@@ -124,8 +115,6 @@ class _MyAppsState extends State<MyApps> {
     // final double vRatio =
     //     imageSize.height == 0 ? 1 : size.height / imageSize.height;
 
-    offsetForPart(PoseLandmark part) =>
-        Offset(part.position.x, part.position.y);
     for (final part in pose!.landmarks) {
       if (part.type == PoseLandmarkType.nose) {
         x_nose = part.position.x;
@@ -166,26 +155,32 @@ class _MyAppsState extends State<MyApps> {
     });
   }
 
-  Future<void> _toggleDetectPose() async {
-    if (_isDetectingPose) {
-      await BodyDetection.disablePoseDetection();
-    } else {
-      await BodyDetection.enablePoseDetection();
-    }
+  void add() async {
+    CollectionReference ref = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("measurements");
 
-    setState(() {
-      _isDetectingPose = !_isDetectingPose;
-      _detectedPose = null;
-    });
+    var data = {
+      "DistancePerPixel": dist,
+      "ShirtLength": shirtlength,
+      "ArmLength": armlength,
+      "ShoulderLength": shoulderlength,
+      "PantLength": pantlength
+    };
+    ref.add(data);
   }
 
   void _resetState() {
     setState(() {
-      _maskImage = null;
       _detectedPose = null;
       _imageSize = Size.zero;
       selected = false;
       dist = 0;
+      shirtlength = 0;
+      shoulderlength = 0;
+      armlength = 0;
+      pantlength = 0;
     });
   }
 
@@ -254,13 +249,14 @@ class _MyAppsState extends State<MyApps> {
                           z_rightwrist16) *
                       dist;
                   shoulderlength = distance(
-                          x_rightshoulder12,
-                          x_leftshoulder11,
-                          y_rightshoulder12,
-                          y_leftshoulder11,
-                          z_rightshoulder12,
-                          z_leftshoulder11) *
-                      dist;
+                              x_rightshoulder12,
+                              x_leftshoulder11,
+                              y_rightshoulder12,
+                              y_leftshoulder11,
+                              z_rightshoulder12,
+                              z_leftshoulder11) *
+                          dist +
+                      1.5;
                   pantlength = distance(x_righthip24, x_rankle28, y_righthip24,
                           y_rankle28, z_righthip24, z_rankle28) *
                       dist;
@@ -294,6 +290,7 @@ class _MyAppsState extends State<MyApps> {
                   // final double vRatio = imageSize.height == 0
                   //     ? 1
                   //     : size.height / imageSize.height;
+                  add();
                 }
                 //  _detectImagePose,
                 ,
