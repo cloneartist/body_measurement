@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/textstyle.dart';
 import 'home.dart';
 
 class UserHeight extends StatefulWidget {
@@ -26,6 +27,7 @@ class _UserHeightState extends State<UserHeight> {
   }
 }
 
+//enter userheight
 class Homes extends StatelessWidget {
   const Homes({
     Key? key,
@@ -41,9 +43,16 @@ class Homes extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextField(
+            decoration: textInputDecoration.copyWith(
+              labelText: 'Enter Your Height',
+            ),
             controller: myController,
           ),
           TextButton(
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // <-- Radius
+              )),
               onPressed: () {
                 // print(myController.text);
                 Navigator.push(

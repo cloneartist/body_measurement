@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//Style for Input textfield
 dynamic textInputDecoration = InputDecoration(
   labelStyle: const TextStyle(
     color: Colors.black,

@@ -1,14 +1,11 @@
 import 'package:body_measurement/screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-// import 'package:permission_handler/permission_handler.dart';
 
 import 'firebase_options.dart';
 
-// void main() {
-//   runApp(const MyApp());
-// }
 void main() async {
+  //initialize firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -33,30 +30,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-// class Displ extends StatefulWidget {
-//   const Displ({Key? key}) : super(key: key);
-
-//   @override
-//   State<Displ> createState() => _DisplState();
-// }
-
-// class _DisplState extends State<Displ> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Container(
-//         child: TextButton(
-//             onPressed: () {
-//               Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                   builder: (context) => twk(dist),
-//                 ),
-//               );
-//             },
-//             child: Text("measure")),
-//       ),
-//     );
-//   }
-// }
