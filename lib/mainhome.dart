@@ -283,10 +283,10 @@ class _MyAppsState extends State<MyApps> {
 
                   setState(() {
                     dist = dist;
-                    shirtlength = shirtlength;
-                    armlength = armlength;
-                    shoulderlength = shoulderlength;
-                    pantlength = pantlength;
+                    shirtlength = shirtlength / 2.54;
+                    armlength = armlength / 2.54;
+                    shoulderlength = shoulderlength / 2.54;
+                    pantlength = pantlength / 2.54;
                     // print(widget.posted);
                   });
                   // final double hRatio =
