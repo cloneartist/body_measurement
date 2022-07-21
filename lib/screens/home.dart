@@ -8,7 +8,7 @@ import 'package:body_detection/models/body_mask.dart';
 import 'package:body_detection/models/pose_landmark.dart';
 import 'package:body_detection/models/pose_landmark_type.dart';
 import 'package:body_detection/png_image.dart';
-import 'package:body_measurement/results.dart';
+import 'package:body_measurement/screens/results.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;

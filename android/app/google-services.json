@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "212031778199",
+    "project_id": "rightfitmeasure",
+    "storage_bucket": "rightfitmeasure.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212031778199:android:95ff1ab99211a371c5a8d2",
+        "android_client_info": {
+          "package_name": "com.example.body_measurement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "212031778199-i0fp9edaajubdu78gn7jmb9umqal9k05.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCyVlZdLrlqE5hGGZr1qbZJz65rZXbTw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "212031778199-i0fp9edaajubdu78gn7jmb9umqal9k05.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
