@@ -22,14 +22,6 @@ class PosePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    double xl = 0.0,
-        xr = 0.0,
-        yl = 0.0,
-        yr = 0.0,
-        sumx = 0.0,
-        sumy = 0.0,
-        disto = 0.0;
-
     final double hRatio =
         imageSize.width == 0 ? 1 : size.width / imageSize.width;
     final double vRatio =
@@ -39,18 +31,6 @@ class PosePainter extends CustomPainter {
         Offset(part.position.x * hRatio, part.position.y * vRatio);
 
     for (final part in pose.landmarks) {
-      // if (part.type == PoseLandmarkType.leftShoulder) {
-      //   // print(part.type);
-      //   // print(part.position.x);
-      //   // print(part.position.y);
-      //   // print(part.position.z);
-      //   xl = part.position.x * hRatio;
-      //   yl = part.position.y * vRatio;
-      // } else if (part.type == PoseLandmarkType.rightShoulder) {
-      //   xr = part.position.x * hRatio;
-      //   yr = part.position.y * vRatio;
-      // }
-
       // Draw a circular indicator for the landmark.
       canvas.drawCircle(offsetForPart(part), 5, circlePaint);
 
@@ -67,24 +47,6 @@ class PosePainter extends CustomPainter {
       tp.layout();
       tp.paint(canvas, offsetForPart(part));
     }
-    // sumx = (xr - xl) * (xr - xl);
-    // print(sumx);
-    // sumy = (yr - yl) * (yr - yl);
-    // print(sumy);
-    // disto = sumx + sumy;
-    // print(disto);
-    // dist = sqrt(disto);
-    // print(dist);
-    // Disp(dist);
-
-    // Draw connections between the landmarks.
-    //   final landmarksByType = {for (final it in pose.landmarks) it.type: it};
-    //   for (final connection in connections) {
-    //     final point1 = offsetForPart(landmarksByType[connection[0]]!);
-    //     final point2 = offsetForPart(landmarksByType[connection[1]]!);
-    //     canvas.drawLine(point1, point2, linePaint);
-    //   }
-    // }
   }
 
   @override
@@ -92,16 +54,3 @@ class PosePainter extends CustomPainter {
     return true;
   }
 }
-
-// class Disp extends StatelessWidget {
-//   var measurement;
-
-//   // const Disp({ Key? key }) : super(key: key);
-//   Disp(this.measurement);
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: Text("$measurement"),
-//     );
-//   }
-// }
