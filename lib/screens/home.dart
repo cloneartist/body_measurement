@@ -231,7 +231,7 @@ class _MyAppsState extends State<MyApps> {
                 OutlinedButton(
                   onPressed: () {
                     user_height = double.tryParse(widget.posted)!;
-                    // double? parsedValue2 =
+
                     dist = user_height /
                         distance(x_nose, x_rankle28, y_nose, y_rankle28, z_nose,
                             z_rankle28);
@@ -283,6 +283,10 @@ class _MyAppsState extends State<MyApps> {
                   }
                   //  _detectImagePose,
                   ,
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12), // <-- Radius
+                  )),
                   child: const Text('Calculate '),
                 ),
 
