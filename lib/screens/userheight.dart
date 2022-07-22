@@ -23,6 +23,7 @@ class _UserHeightState extends State<UserHeight> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Homes(myController: myController),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

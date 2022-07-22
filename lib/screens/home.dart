@@ -202,7 +202,7 @@ class _MyAppsState extends State<MyApps> {
 //buttons and measurements ui
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp(debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: Scaffold(
           appBar: AppBar(
