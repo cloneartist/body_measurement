@@ -144,6 +144,26 @@ class _MyAppsState extends State<MyApps> {
       shoulderlength = 0;
       armlength = 0;
       pantlength = 0;
+      x_nose = 0.0;
+      y_nose = 0.0;
+      z_nose = 0.0;
+      x_rankle28 = 0.0;
+      y_rankle28 = 0.0;
+      z_rankle28 = 0.0;
+      x_rightshoulder12 = 0.0;
+      y_rightshoulder12 = 0.0;
+      z_rightshoulder12 = 0.0;
+      x_righthip24 = 0.0;
+      y_righthip24 = 0.0;
+      z_righthip24 = 0.0;
+      x_rightwrist16 = 0.0;
+      y_rightwrist16 = 0.0;
+      z_rightwrist16 = 0.0;
+      x_leftshoulder11 = 0.0;
+      y_leftshoulder11 = 0.0;
+      z_leftshoulder11 = 0.0;
+
+      //equations
     });
   }
 
