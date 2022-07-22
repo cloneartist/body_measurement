@@ -322,10 +322,23 @@ class _MyAppsState extends State<MyApps> {
                 // Disp(0)
                 //Measurements displayed
                 // Text("DistancePerPixel:" "$dist"),
-                Text("Shirt Length:" "$shirtlength"),
-                Text("Arm Length:" "$armlength"),
-                Text("Shoulder Length:" "$shoulderlength"),
-                Text("Pant Length:" "$pantlength"),
+
+                shirtlength.isNaN
+                    ? Container(
+                        child:
+                            Text("Invalid Image!. Please Select Another Image"),
+                      )
+                    : Text("Shirt Length:" "$shirtlength"),
+
+                armlength.isNaN
+                    ? Container()
+                    : Text("Arm Length:" "$armlength"),
+                shoulderlength.isNaN
+                    ? Container()
+                    : Text("Shoulder Length:" "$shoulderlength"),
+                pantlength.isNaN
+                    ? Container()
+                    : Text("Pant Length:" "$pantlength"),
               ],
             ),
           ),
