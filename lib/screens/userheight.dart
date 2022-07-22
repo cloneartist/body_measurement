@@ -40,12 +40,21 @@ class Homes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Right Fit',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextField(
             decoration: textInputDecoration.copyWith(
-              labelText: 'Enter Your Height',
+              labelText: 'Enter Your Height in cm',
             ),
             controller: myController,
           ),

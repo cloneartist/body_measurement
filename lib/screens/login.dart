@@ -41,8 +41,8 @@ class _LoginState extends State<Login> {
                   height: 10,
                 ),
                 const Text(
-                  "Welcome Back To\n\t       RightFit",
-                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                  "RightFit",
+                  style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(flex: 1),
                 TextFormField(

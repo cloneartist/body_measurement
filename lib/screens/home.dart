@@ -202,14 +202,15 @@ class _MyAppsState extends State<MyApps> {
 //buttons and measurements ui
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.white,
             title: const Text(
-              'Body Measurement',
+              'Right Fit',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
