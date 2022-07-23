@@ -41,7 +41,7 @@ class _LoginState extends State<Login> {
                   height: 10,
                 ),
                 const Text(
-                  "RightFit",
+                  "Right Fit",
                   style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(flex: 1),

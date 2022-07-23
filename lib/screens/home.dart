@@ -339,6 +339,18 @@ class _MyAppsState extends State<MyApps> {
                 pantlength.isNaN
                     ? Container()
                     : Text("Pant Length:" "$pantlength"),
+
+                shoulderlength.isNaN || shoulderlength == 0
+                    ? Container()
+                    : shoulderlength < 13.5
+                        ? Text("The Recommended size is XS")
+                        : shoulderlength > 13.5 && shoulderlength < 14.5
+                            ? Text("The Recommended size is S")
+                            : shoulderlength > 14.5 && shoulderlength < 15
+                                ? Text("The Recommended size is M")
+                                : shoulderlength > 15
+                                    ? Text("The Recommended size is L")
+                                    : Container()
               ],
             ),
           ),
